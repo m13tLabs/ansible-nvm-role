@@ -1,0 +1,58 @@
+
+- name: get stats on nvm
+  stat: path="{{ nvm_dest }}"
+  become: true
+  become_method: sudo
+  register: nvm_stat
+
+- name: create .nvm directory
+  file:
+    path: "{{ nvm_dest }}"
+    group: "{{ nvm_group }}"
+    owner: "{{ nvm_user }}"
+    mode: 0755
+    recurse: yes
+    state: directory
+  become: true
+  become_method: sudo
+  when: not nvm_stat.stat.exists
+
+- name: download nvm script
+  get_url:
+    dest: "{{ nvm_dest }}"
+    url: https://raw.githubusercontent.com/creationix/nvm/{{ nvm_version }}/nvm.sh
+  become: true
+  become_user: "{{nvm_user}}"
+
+- include: permission.yml
+
+- name: get stats on .profile
+  stat: path="{{ nvm_working_path }}/.profile"
+  become: true
+  become_user: "{{nvm_user}}"
+  register: profile_stat
+  when: ansible_os_family == 'Darwin'
+
+- name: get stats on .bashrc
+  stat: path="{{ nvm_working_path }}/.bashrc"
+  become: true
+  become_user: "{{nvm_user}}"
+  register: bashrc_stat
+  when: ansible_os_family != 'Darwin' and ansible_os_family != 'Windows'
+
+- name: Setup profile on mac
+  shell: touch {{ nvm_working_path }}/.profile && chmod +x {{ nvm_working_path }}/.profile && ln -s {{ nvm_working_path }}/.profile {{ nvm_working_path }}/.bashrc
+  become: true
+  become_user: "{{nvm_user}}"
+  when: ansible_os_family == 'Darwin' and not profile_stat.stat.exists
+
+- name: Setup profile on linux
+  shell: touch {{ nvm_working_path }}/.bashrc && chmod +x {{ nvm_working_path }}/.bashrc
+  become: true
+  become_user: "{{nvm_user}}"
+  when: ansible_os_family != 'Darwin' and ansible_os_family != 'Windows' and not bashrc_stat.stat.exists
+
+- name: add nvm to ~/.bashrc
+  become: true
+  become_user: "{{nvm_user}}"
+  lineinfile: dest="{{ nvm_working_path }}/.bashrc" line="source ~/.nvm/nvm.sh"

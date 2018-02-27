@@ -1,0 +1,2 @@
+nvm_working_path: "/home/{{ ansible_user }}"
+nvm_dest: "{{ nvm_working_path }}/.nvm"
