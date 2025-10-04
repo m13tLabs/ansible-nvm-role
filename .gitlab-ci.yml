@@ -1,0 +1,4 @@
+include:
+  - project: 'm13t/ci'
+    ref: 'main'
+    file: '.gitlab-ci/jobs/ansible-role.yml'
