@@ -1,10 +1,10 @@
 
-- include: nvm.yml
+- include_tasks: nvm.yml
 
-- include: node.yml
+- include_tasks: node.yml
 
-- include: pkgs.yml
+- include_tasks: pkgs.yml
   when: "{{ nvm_npm_pkgs | length }} > 0"
 
 # needed in order to preserve idempotency due to globally installed packages
-- include: permission.yml
+- include_tasks: permission.yml
