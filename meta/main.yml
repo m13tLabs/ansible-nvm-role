@@ -1,5 +1,6 @@
-role_name: nvm
 galaxy_info:
+  role_name: nvm
+  namespace: mare
   author: Martin Reinhardt, <martin.reinhardt@holisticon.de>
   description: Role installing nvm
   company: Holisticon AG
