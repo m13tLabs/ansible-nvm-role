@@ -1,0 +1,13 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    nvm_user: testuser
+    nvm_group: testuser
+    nvm_version: "0.39.7"
+    nvm_node_version: "20.11.0"
+    nvm_working_path: /home/testuser
+    nvm_dest: /home/testuser/.nvm
+    nvm_npm_pkgs: []
+  roles:
+    - role: ansible-nvm-role

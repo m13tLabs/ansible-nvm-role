@@ -1,0 +1,102 @@
+---
+- name: Verify
+  hosts: all
+  vars:
+    nvm_user: testuser
+    nvm_dest: /home/testuser/.nvm
+    nvm_node_version: "20.11.0"
+  tasks:
+    - name: Check .nvm directory exists
+      stat:
+        path: "{{ nvm_dest }}"
+      register: nvm_dir_stat
+
+    - name: Assert .nvm directory exists with correct permissions
+      assert:
+        that:
+          - nvm_dir_stat.stat.exists
+          - nvm_dir_stat.stat.isdir
+          - nvm_dir_stat.stat.mode == "0755"
+          - nvm_dir_stat.stat.pw_name == nvm_user
+        fail_msg: ".nvm directory missing or has wrong permissions/ownership at {{ nvm_dest }}"
+
+    - name: Check nvm.sh exists (NVM installer was executed)
+      stat:
+        path: "{{ nvm_dest }}/nvm.sh"
+      register: nvm_sh_stat
+
+    - name: Assert nvm.sh is present
+      assert:
+        that:
+          - nvm_sh_stat.stat.exists
+        fail_msg: >
+          nvm.sh not found at {{ nvm_dest }}/nvm.sh —
+          the NVM install script was downloaded but not executed.
+          Add a task to run install.sh after downloading it.
+
+    - name: Check .bashrc contains nvm source line
+      become: true
+      become_user: "{{ nvm_user }}"
+      shell: "grep -c 'source ~/.nvm/nvm.sh' /home/{{ nvm_user }}/.bashrc"
+      register: bashrc_nvm_line
+      changed_when: false
+      failed_when: false
+
+    - name: Assert .bashrc sources nvm
+      assert:
+        that:
+          - bashrc_nvm_line.stdout | int > 0
+        fail_msg: ".bashrc at /home/{{ nvm_user }}/.bashrc does not contain 'source ~/.nvm/nvm.sh'"
+
+    - name: Check .npmrc was copied to .nvm directory
+      stat:
+        path: "{{ nvm_dest }}/.npmrc"
+      register: npmrc_stat
+
+    - name: Assert .npmrc exists in .nvm directory
+      assert:
+        that:
+          - npmrc_stat.stat.exists
+        fail_msg: ".npmrc was not copied to {{ nvm_dest }}"
+
+    - name: Check Node.js version directory exists
+      stat:
+        path: "{{ nvm_dest }}/versions/node/v{{ nvm_node_version }}"
+      register: node_dir_stat
+
+    - name: Assert Node.js version directory exists
+      assert:
+        that:
+          - node_dir_stat.stat.exists
+          - node_dir_stat.stat.isdir
+        fail_msg: "Node.js v{{ nvm_node_version }} was not installed — expected directory {{ nvm_dest }}/versions/node/v{{ nvm_node_version }}"
+
+    - name: Verify node binary runs and reports correct version
+      become: true
+      become_user: "{{ nvm_user }}"
+      shell: "source {{ nvm_dest }}/nvm.sh && node --version"
+      args:
+        executable: /bin/bash
+      register: node_version_output
+      changed_when: false
+
+    - name: Assert correct Node.js version is active
+      assert:
+        that:
+          - "'v' + nvm_node_version in node_version_output.stdout"
+        fail_msg: "Expected Node.js v{{ nvm_node_version }}, got: {{ node_version_output.stdout }}"
+
+    - name: Verify nvm command is available
+      become: true
+      become_user: "{{ nvm_user }}"
+      shell: "source {{ nvm_dest }}/nvm.sh && nvm --version"
+      args:
+        executable: /bin/bash
+      register: nvm_version_output
+      changed_when: false
+
+    - name: Assert nvm command works
+      assert:
+        that:
+          - nvm_version_output.rc == 0
+        fail_msg: "nvm command failed: {{ nvm_version_output.stderr }}"

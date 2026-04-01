@@ -1,0 +1,25 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: debian-nvm
+    image: debian:bullseye
+    pre_build_image: true
+    privileged: false
+    command: "/bin/sh -c 'while true; do sleep 3600; done'"
+provisioner:
+  name: ansible
+  env:
+    ANSIBLE_ROLES_PATH: "${MOLECULE_PROJECT_DIRECTORY}/.."
+    ANSIBLE_CALLBACKS_ENABLED: "junit"
+    JUNIT_OUTPUT_DIR: "${MOLECULE_SCENARIO_DIRECTORY}/reports"
+    JUNIT_TASK_CLASS: "yes"
+    JUNIT_FAIL_ON_CHANGE: "no"
+  playbooks:
+    prepare: prepare.yml
+    converge: converge.yml
+    verify: verify.yml
+verifier:
+  name: ansible

@@ -2,3 +2,36 @@ include:
   - project: 'm13t/ci'
     ref: 'main'
     file: '.gitlab-ci/jobs/ansible-role.yml'
+
+# TODO: Move to template
+.ansible_molecule_test:
+  tags:
+    - shell
+  before_script:
+    - docker info
+    - python3 --version
+    - python3 -m venv .venv
+    - source .venv/bin/activate
+    - pip install --upgrade pip
+    - pip install ansible molecule-plugins[docker]
+  script:
+    - source .venv/bin/activate
+    - cat $GITLAB_GIT_SETUP | bash
+    - |
+      WORKING_DIR=$(pwd)
+      [ -f molecule/default/requirements.txt ] && pip install -r molecule/default/requirements.txt
+      chmod -R 744 ${WORKING_DIR}
+      molecule test
+  after_script:
+    - rm -rf .venv
+
+Molecule test:
+  stage: test
+  extends:
+    - .ansible_molecule_test
+  rules:
+    - exists:
+        - molecule/default/molecule.yml
+  artifacts:
+    reports:
+      junit: molecule/default/reports/*.xml

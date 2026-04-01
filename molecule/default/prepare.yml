@@ -1,0 +1,32 @@
+---
+- name: Prepare
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Install Python3 and base dependencies
+      raw: >
+        apt-get update -qq &&
+        apt-get install -y -qq python3 sudo curl wget ca-certificates bash
+      changed_when: false
+
+    - name: Gather facts after Python installation
+      setup:
+
+    - name: Create test user group
+      group:
+        name: testuser
+        state: present
+
+    - name: Create test user with home directory
+      user:
+        name: testuser
+        group: testuser
+        shell: /bin/bash
+        create_home: yes
+        state: present
+
+    - name: Allow testuser passwordless sudo
+      copy:
+        content: "testuser ALL=(ALL) NOPASSWD: ALL\n"
+        dest: /etc/sudoers.d/testuser
+        mode: "0440"

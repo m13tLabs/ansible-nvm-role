@@ -15,3 +15,6 @@ Desktop.ini
 ansible/.imported-roles
 ansible/*.retry
 *.iml
+
+# Molecule test reports
+molecule/**/reports/
