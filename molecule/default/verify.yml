@@ -7,12 +7,12 @@
     nvm_node_version: "20.11.0"
   tasks:
     - name: Check .nvm directory exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ nvm_dest }}"
       register: nvm_dir_stat
 
     - name: Assert .nvm directory exists with correct permissions
-      assert:
+      ansible.builtin.assert:
         that:
           - nvm_dir_stat.stat.exists
           - nvm_dir_stat.stat.isdir
@@ -21,12 +21,12 @@
         fail_msg: ".nvm directory missing or has wrong permissions/ownership at {{ nvm_dest }}"
 
     - name: Check nvm.sh exists (NVM installer was executed)
-      stat:
+      ansible.builtin.stat:
         path: "{{ nvm_dest }}/nvm.sh"
       register: nvm_sh_stat
 
     - name: Assert nvm.sh is present
-      assert:
+      ansible.builtin.assert:
         that:
           - nvm_sh_stat.stat.exists
         fail_msg: >
@@ -35,68 +35,70 @@
           Add a task to run install.sh after downloading it.
 
     - name: Check .bashrc contains nvm source line
+      ansible.builtin.shell: "grep -c 'source ~/.nvm/nvm.sh' /home/{{ nvm_user }}/.bashrc"
       become: true
       become_user: "{{ nvm_user }}"
-      shell: "grep -c 'source ~/.nvm/nvm.sh' /home/{{ nvm_user }}/.bashrc"
       register: bashrc_nvm_line
       changed_when: false
       failed_when: false
 
     - name: Assert .bashrc sources nvm
-      assert:
+      ansible.builtin.assert:
         that:
           - bashrc_nvm_line.stdout | int > 0
         fail_msg: ".bashrc at /home/{{ nvm_user }}/.bashrc does not contain 'source ~/.nvm/nvm.sh'"
 
     - name: Check .npmrc was copied to .nvm directory
-      stat:
+      ansible.builtin.stat:
         path: "{{ nvm_dest }}/.npmrc"
       register: npmrc_stat
 
     - name: Assert .npmrc exists in .nvm directory
-      assert:
+      ansible.builtin.assert:
         that:
           - npmrc_stat.stat.exists
         fail_msg: ".npmrc was not copied to {{ nvm_dest }}"
 
     - name: Check Node.js version directory exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ nvm_dest }}/versions/node/v{{ nvm_node_version }}"
       register: node_dir_stat
 
     - name: Assert Node.js version directory exists
-      assert:
+      ansible.builtin.assert:
         that:
           - node_dir_stat.stat.exists
           - node_dir_stat.stat.isdir
-        fail_msg: "Node.js v{{ nvm_node_version }} was not installed — expected directory {{ nvm_dest }}/versions/node/v{{ nvm_node_version }}"
+        fail_msg: >-
+          Node.js v{{ nvm_node_version }} was not installed —
+          expected directory {{ nvm_dest }}/versions/node/v{{ nvm_node_version }}
 
     - name: Verify node binary runs and reports correct version
-      become: true
-      become_user: "{{ nvm_user }}"
-      shell: "source {{ nvm_dest }}/nvm.sh && node --version"
+      ansible.builtin.shell: "source {{ nvm_dest }}/nvm.sh && node --version"
       args:
         executable: /bin/bash
+      become: true
+      become_user: "{{ nvm_user }}"
       register: node_version_output
       changed_when: false
 
     - name: Assert correct Node.js version is active
-      assert:
+      ansible.builtin.assert:
         that:
           - "'v' + nvm_node_version in node_version_output.stdout"
         fail_msg: "Expected Node.js v{{ nvm_node_version }}, got: {{ node_version_output.stdout }}"
 
     - name: Verify nvm command is available
-      become: true
-      become_user: "{{ nvm_user }}"
-      shell: "source {{ nvm_dest }}/nvm.sh && nvm --version"
+      ansible.builtin.shell: "source {{ nvm_dest }}/nvm.sh && nvm --version"
       args:
         executable: /bin/bash
+      become: true
+      become_user: "{{ nvm_user }}"
       register: nvm_version_output
       changed_when: false
 
     - name: Assert nvm command works
-      assert:
+      ansible.builtin.assert:
         that:
           - nvm_version_output.rc == 0
         fail_msg: "nvm command failed: {{ nvm_version_output.stderr }}"
