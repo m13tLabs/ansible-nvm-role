@@ -20,7 +20,7 @@
 - name: download nvm script
   get_url:
     dest: "{{ nvm_dest }}"
-    url: https://raw.githubusercontent.com/creationix/nvm/{{ nvm_version }}/nvm.sh
+    url: "https://raw.githubusercontent.com/nvm-sh/nvm/v{{ nvm_version }}/install.sh"
   become: true
   become_user: "{{nvm_user}}"
 
