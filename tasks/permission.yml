@@ -1,11 +1,18 @@
 ---
-- name: Update .nvm dir permission
+- name: Update .nvm dir ownership
   ansible.builtin.file:
     path: "{{ nvm_dest }}"
     group: "{{ nvm_group }}"
     owner: "{{ nvm_user }}"
-    mode: "0755"
     recurse: true
+    state: directory
+  become: true
+  become_method: sudo
+
+- name: Update .nvm dir mode
+  ansible.builtin.file:
+    path: "{{ nvm_dest }}"
+    mode: "0755"
     state: directory
   become: true
   become_method: sudo
