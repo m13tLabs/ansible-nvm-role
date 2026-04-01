@@ -3,7 +3,7 @@
   ansible.builtin.stat:
     path: "{{ nvm_dest }}"
   become: true
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   register: nvm_stat
 
 - name: Create .nvm directory
@@ -15,7 +15,7 @@
     recurse: true
     state: directory
   become: true
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   when: not nvm_stat.stat.exists
 
 - name: Download nvm install script

@@ -7,7 +7,7 @@
     recurse: true
     state: directory
   become: true
-  become_method: sudo
+  become_method: ansible.builtin.sudo
 
 - name: Update .nvm dir mode
   ansible.builtin.file:
@@ -15,7 +15,7 @@
     mode: "0755"
     state: directory
   become: true
-  become_method: sudo
+  become_method: ansible.builtin.sudo
 
 - name: Copy .npmrc
   ansible.builtin.copy:

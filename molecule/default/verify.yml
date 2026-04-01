@@ -35,7 +35,7 @@
           Add a task to run install.sh after downloading it.
 
     - name: Check .bashrc contains nvm source line
-      ansible.builtin.shell: "grep -c 'source ~/.nvm/nvm.sh' /home/{{ nvm_user }}/.bashrc"
+      ansible.builtin.command: "grep -c 'source ~/.nvm/nvm.sh' /home/{{ nvm_user }}/.bashrc"
       become: true
       become_user: "{{ nvm_user }}"
       register: bashrc_nvm_line

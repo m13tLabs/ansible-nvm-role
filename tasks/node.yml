@@ -15,7 +15,7 @@
   when: not node_stat.stat.exists
   changed_when: true
 
-- name: Set default Node version {{ nvm_node_version }} to be used in new shell
+- name: Set default Node version for new shell
   ansible.builtin.shell: "source {{ nvm_dest }}/nvm.sh && nvm alias default {{ nvm_node_version }}"
   args:
     executable: /bin/bash
