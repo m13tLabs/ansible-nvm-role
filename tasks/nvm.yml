@@ -26,6 +26,16 @@
   become: true
   become_user: "{{ nvm_user }}"
 
+- name: Run nvm install script
+  ansible.builtin.shell: "bash {{ nvm_dest }}/install.sh"
+  args:
+    executable: /bin/bash
+    creates: "{{ nvm_dest }}/nvm.sh"
+  become: true
+  become_user: "{{ nvm_user }}"
+  environment:
+    NVM_DIR: "{{ nvm_dest }}"
+
 - name: Fix permissions after download
   ansible.builtin.include_tasks: permission.yml
 
