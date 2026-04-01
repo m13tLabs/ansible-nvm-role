@@ -1,21 +1,25 @@
-- name: get stats on node
-  stat: path="{{ nvm_dest }}/versions/node/v{{ nvm_node_version }}"
+---
+- name: Get stats on node
+  ansible.builtin.stat:
+    path: "{{ nvm_dest }}/versions/node/v{{ nvm_node_version }}"
   become: true
-  become_user: "{{nvm_user}}"
+  become_user: "{{ nvm_user }}"
   register: node_stat
 
-- name: install node
-  shell: "source {{ nvm_dest }}/nvm.sh && nvm install {{ nvm_node_version }}"
+- name: Install node
+  ansible.builtin.shell: "source {{ nvm_dest }}/nvm.sh && nvm install {{ nvm_node_version }}"
   args:
-     executable: /bin/bash
+    executable: /bin/bash
   become: true
-  become_user: "{{nvm_user}}"
+  become_user: "{{ nvm_user }}"
   when: not node_stat.stat.exists
+  changed_when: true
 
-- name: set default Node version {{ nvm_node_version }} to be used in new shell
-  shell: "source {{nvm_dest}}/nvm.sh && nvm alias default {{nvm_node_version}}"
+- name: Set default Node version {{ nvm_node_version }} to be used in new shell
+  ansible.builtin.shell: "source {{ nvm_dest }}/nvm.sh && nvm alias default {{ nvm_node_version }}"
   args:
-     executable: /bin/bash
+    executable: /bin/bash
   become: true
-  become_user: "{{nvm_user}}"
+  become_user: "{{ nvm_user }}"
   when: not node_stat.stat.exists
+  changed_when: true

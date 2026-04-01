@@ -1,58 +1,87 @@
-
-- name: get stats on nvm
-  stat: path="{{ nvm_dest }}"
+---
+- name: Get stats on nvm
+  ansible.builtin.stat:
+    path: "{{ nvm_dest }}"
   become: true
   become_method: sudo
   register: nvm_stat
 
-- name: create .nvm directory
-  file:
+- name: Create .nvm directory
+  ansible.builtin.file:
     path: "{{ nvm_dest }}"
     group: "{{ nvm_group }}"
     owner: "{{ nvm_user }}"
-    mode: 0755
-    recurse: yes
+    mode: "0755"
+    recurse: true
     state: directory
   become: true
   become_method: sudo
   when: not nvm_stat.stat.exists
 
-- name: download nvm script
-  get_url:
-    dest: "{{ nvm_dest }}"
+- name: Download nvm install script
+  ansible.builtin.get_url:
+    dest: "{{ nvm_dest }}/install.sh"
     url: "https://raw.githubusercontent.com/nvm-sh/nvm/v{{ nvm_version }}/install.sh"
+    mode: "0755"
   become: true
-  become_user: "{{nvm_user}}"
+  become_user: "{{ nvm_user }}"
 
-- include: permission.yml
+- name: Fix permissions after download
+  ansible.builtin.include_tasks: permission.yml
 
-- name: get stats on .profile
-  stat: path="{{ nvm_working_path }}/.profile"
+- name: Get stats on .profile
+  ansible.builtin.stat:
+    path: "{{ nvm_working_path }}/.profile"
   become: true
-  become_user: "{{nvm_user}}"
+  become_user: "{{ nvm_user }}"
   register: profile_stat
   when: ansible_os_family == 'Darwin'
 
-- name: get stats on .bashrc
-  stat: path="{{ nvm_working_path }}/.bashrc"
+- name: Get stats on .bashrc
+  ansible.builtin.stat:
+    path: "{{ nvm_working_path }}/.bashrc"
   become: true
-  become_user: "{{nvm_user}}"
+  become_user: "{{ nvm_user }}"
   register: bashrc_stat
   when: ansible_os_family != 'Darwin' and ansible_os_family != 'Windows'
 
-- name: Setup profile on mac
-  shell: touch {{ nvm_working_path }}/.profile && chmod +x {{ nvm_working_path }}/.profile && ln -s {{ nvm_working_path }}/.profile {{ nvm_working_path }}/.bashrc
+- name: Create .profile on macOS
+  ansible.builtin.file:
+    path: "{{ nvm_working_path }}/.profile"
+    state: touch
+    mode: "0644"
   become: true
-  become_user: "{{nvm_user}}"
-  when: ansible_os_family == 'Darwin' and not profile_stat.stat.exists
+  become_user: "{{ nvm_user }}"
+  when:
+    - ansible_os_family == 'Darwin'
+    - not profile_stat.stat.exists
 
-- name: Setup profile on linux
-  shell: touch {{ nvm_working_path }}/.bashrc && chmod +x {{ nvm_working_path }}/.bashrc
+- name: Symlink .profile to .bashrc on macOS
+  ansible.builtin.file:
+    src: "{{ nvm_working_path }}/.profile"
+    dest: "{{ nvm_working_path }}/.bashrc"
+    state: link
   become: true
-  become_user: "{{nvm_user}}"
-  when: ansible_os_family != 'Darwin' and ansible_os_family != 'Windows' and not bashrc_stat.stat.exists
+  become_user: "{{ nvm_user }}"
+  when:
+    - ansible_os_family == 'Darwin'
+    - not profile_stat.stat.exists
 
-- name: add nvm to ~/.bashrc
+- name: Create .bashrc on Linux
+  ansible.builtin.file:
+    path: "{{ nvm_working_path }}/.bashrc"
+    state: touch
+    mode: "0644"
   become: true
-  become_user: "{{nvm_user}}"
-  lineinfile: dest="{{ nvm_working_path }}/.bashrc" line="source ~/.nvm/nvm.sh"
+  become_user: "{{ nvm_user }}"
+  when:
+    - ansible_os_family != 'Darwin'
+    - ansible_os_family != 'Windows'
+    - not bashrc_stat.stat.exists
+
+- name: Add nvm to ~/.bashrc
+  ansible.builtin.lineinfile:
+    dest: "{{ nvm_working_path }}/.bashrc"
+    line: "source ~/.nvm/nvm.sh"
+  become: true
+  become_user: "{{ nvm_user }}"

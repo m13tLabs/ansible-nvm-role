@@ -1,15 +1,19 @@
 ---
-
-- name: update .nvm dir permission
-  file:
+- name: Update .nvm dir permission
+  ansible.builtin.file:
     path: "{{ nvm_dest }}"
     group: "{{ nvm_group }}"
     owner: "{{ nvm_user }}"
-    mode: 0755
-    recurse: yes
+    mode: "0755"
+    recurse: true
     state: directory
   become: true
   become_method: sudo
 
 - name: Copy .npmrc
-  copy: src=".npmrc" dest="{{ nvm_dest }}" owner="{{ nvm_user }}" group="{{ nvm_group }}"
+  ansible.builtin.copy:
+    src: ".npmrc"
+    dest: "{{ nvm_dest }}"
+    owner: "{{ nvm_user }}"
+    group: "{{ nvm_group }}"
+    mode: "0600"
