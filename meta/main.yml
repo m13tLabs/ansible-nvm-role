@@ -1,3 +1,4 @@
+role_name: nvm
 galaxy_info:
   author: Martin Reinhardt, <martin.reinhardt@holisticon.de>
   description: Role installing nvm
