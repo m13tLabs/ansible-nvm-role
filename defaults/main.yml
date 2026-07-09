@@ -4,3 +4,7 @@ nvm_group: "{{ nvm_user }}"
 nvm_working_path: "/home/{{ nvm_user }}"
 nvm_dest: "{{ nvm_working_path }}/.nvm"
 nvm_npm_pkgs: []
+# renovate: datasource=github-tags depName=nvm-sh/nvm
+nvm_version: "0.40.4"
+# renovate: datasource=github-tags depName=nodejs/node
+nvm_node_version: "24.16.0"

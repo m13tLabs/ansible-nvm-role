@@ -1,5 +1,1 @@
 ---
-# renovate: datasource=github-tags depName=nvm-sh/nvm
-nvm_version: "0.40.4"
-# renovate: datasource=github-tags depName=nodejs/node
-nvm_node_version: "24.16.0"
