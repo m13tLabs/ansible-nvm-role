@@ -1,3 +1,9 @@
+## [1.0.5](https://gitlab.m13t.de/infrastructure/ansible-nvm-role/compare/v1.0.4...v1.0.5) (2026-07-09)
+
+
+### Bug Fixes
+
+* Move nvm version load into role ([1aa677b](https://gitlab.m13t.de/infrastructure/ansible-nvm-role/commit/1aa677b9e8cb2d5315e15f176cbc2637390fb980))
 ## [1.0.4](https://gitlab.m13t.de/infrastructure/ansible-nvm-role/compare/v1.0.3...v1.0.4) (2026-07-09)
 
 
