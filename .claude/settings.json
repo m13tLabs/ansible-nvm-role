@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "/Users/mreinhardt/git/private/infrastructure/ansible-nvm-role/tests/molecule"
+    ]
+  }
+}
