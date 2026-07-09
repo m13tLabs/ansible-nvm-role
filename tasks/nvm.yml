@@ -95,3 +95,10 @@
     line: "source ~/.nvm/nvm.sh"
   become: true
   become_user: "{{ nvm_user }}"
+
+- name: Add nvm to ~/.bashrc
+  ansible.builtin.lineinfile:
+    dest: "{{ nvm_working_path }}/.bashrc"
+    line: "nvm use {{ nvm_node_version }}"
+  become: true
+  become_user: "{{ nvm_user }}"
