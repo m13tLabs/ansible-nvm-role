@@ -1,2 +1,6 @@
-nvm_working_path: "/home/{{ ansible_user }}"
+---
+nvm_user: "{{ ansible_user }}"
+nvm_group: "{{ nvm_user }}"
+nvm_working_path: "/home/{{ nvm_user }}"
 nvm_dest: "{{ nvm_working_path }}/.nvm"
+nvm_npm_pkgs: []
