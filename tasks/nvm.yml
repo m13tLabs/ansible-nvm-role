@@ -41,7 +41,7 @@
 
 - name: Get stats on .profile
   ansible.builtin.stat:
-    path: "{{ nvm_working_path }}/.profile"
+    path: "{{ nvm_working_path }}/.bashrc"
   become: true
   become_user: "{{ nvm_user }}"
   register: profile_stat
@@ -57,7 +57,7 @@
 
 - name: Create .profile on macOS
   ansible.builtin.file:
-    path: "{{ nvm_working_path }}/.profile"
+    path: "{{ nvm_working_path }}/.bashrc"
     state: touch
     mode: "0644"
   become: true
@@ -68,7 +68,7 @@
 
 - name: Symlink .profile to .bashrc on macOS
   ansible.builtin.file:
-    src: "{{ nvm_working_path }}/.profile"
+    src: "{{ nvm_working_path }}/.bash_profile"
     dest: "{{ nvm_working_path }}/.bashrc"
     state: link
   become: true
