@@ -1,3 +1,4 @@
+## [1.0.6](https://gitlab.m13t.de/infrastructure/ansible-nvm-role/compare/v1.0.5...v1.0.6) (2026-08-03)
 ## [1.0.5](https://gitlab.m13t.de/infrastructure/ansible-nvm-role/compare/v1.0.4...v1.0.5) (2026-07-09)
 
 
