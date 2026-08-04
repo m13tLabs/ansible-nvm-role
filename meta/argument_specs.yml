@@ -1,0 +1,41 @@
+---
+argument_specs:
+  main:
+    options:
+      nvm_dest:
+        description: Configuration value for nvm dest
+        type: str
+        default: '{{ nvm_working_path }}/.nvm'
+        version_added: 1.0.0
+      nvm_group:
+        description: 'Group name or ID (default: ''{{ nvm_user }}'')'
+        type: str
+        default: '{{ nvm_user }}'
+        version_added: 1.0.0
+      nvm_node_version:
+        description: 'Version specification (default: ''24.16.0'')'
+        type: str
+        default: 24.16.0
+        version_added: 1.0.0
+      nvm_npm_pkgs:
+        description: List of nvm npm pkgs items
+        type: list
+        default: []
+        elements: str
+        version_added: 1.0.0
+      nvm_user:
+        description: 'Username for authentication (default: ''{{ ansible_user }}'')'
+        type: str
+        default: '{{ ansible_user }}'
+        version_added: 1.0.0
+      nvm_version:
+        description: 'Version specification (default: ''0.40.4'')'
+        type: str
+        default: 0.40.4
+        version_added: 1.0.0
+      nvm_working_path:
+        description: 'File or directory path (default: ''/home/{{ nvm_user }}'')'
+        type: path
+        default: /home/{{ nvm_user }}
+        version_added: 1.0.0
+...

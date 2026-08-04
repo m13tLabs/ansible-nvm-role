@@ -1,10 +1,51 @@
 ---
+
+# Username for authentication (default: '{{ ansible_user }}')
+#
+# - Type: str
+# - Required: No
+# - Default: {{ ansible_user }}
 nvm_user: "{{ ansible_user }}"
+
+# Group name or ID (default: '{{ nvm_user }}')
+#
+# - Type: str
+# - Required: No
+# - Default: {{ nvm_user }}
 nvm_group: "{{ nvm_user }}"
+
+# File or directory path (default: '/home/{{ nvm_user }}')
+#
+# - Type: path
+# - Required: No
+# - Default: /home/{{ nvm_user }}
 nvm_working_path: "/home/{{ nvm_user }}"
+
+# Configuration value for nvm dest
+#
+# - Type: str
+# - Required: No
+# - Default: {{ nvm_working_path }}/.nvm
 nvm_dest: "{{ nvm_working_path }}/.nvm"
+
+# List of nvm npm pkgs items
+#
+# - Type: list
+# - Required: No
+# - Default: []
+# - List elements: str
 nvm_npm_pkgs: []
-# renovate: datasource=github-tags depName=nvm-sh/nvm
+
+# Version specification (default: '0.40.4')
+#
+# - Type: str
+# - Required: No
+# - Default: 0.40.4
 nvm_version: "0.40.4"
-# renovate: datasource=github-tags depName=nodejs/node
+
+# Version specification (default: '24.16.0')
+#
+# - Type: str
+# - Required: No
+# - Default: 24.16.0
 nvm_node_version: "24.16.0"
