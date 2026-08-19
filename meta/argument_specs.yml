@@ -2,6 +2,9 @@
 argument_specs:
   main:
     options:
+      npm_auth_token:
+        description: 'NPM auth token'
+        type: str
       nvm_dest:
         description: Configuration value for nvm dest
         type: str

@@ -18,9 +18,10 @@
   become_method: ansible.builtin.sudo
 
 - name: Copy .npmrc
-  ansible.builtin.copy:
-    src: ".npmrc"
+  ansible.builtin.template:
+    src: ".npmrc.j2"
     dest: "{{ nvm_dest }}"
     owner: "{{ nvm_user }}"
     group: "{{ nvm_group }}"
     mode: "0600"
+  when: npm_auth_token is defined and npm_auth_token != ''
