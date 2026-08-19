@@ -1,0 +1,177 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: "Type of release to build"
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - custom
+        default: patch
+      custom_version:
+        description: "Version to release (only used when release_type is 'custom', e.g. 1.2.3)"
+        required: false
+        type: string
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          app-id: ${{ vars.CI_APP_ID }}
+          private-key: ${{ secrets.CI_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.head_ref }}
+
+      - name: Get GitHub App User ID
+        id: get-user-id
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Configure Git author
+        run: |
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>'
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Determine release version
+        id: version
+        run: |
+          currentVersion=$(jq -r '.version' config.json)
+
+          case "${{ inputs.release_type }}" in
+            custom)
+              releaseVersion="${{ inputs.custom_version }}"
+              if [ -z "$releaseVersion" ]; then
+                echo "custom_version is required when release_type is 'custom'" >&2
+                exit 1
+              fi
+              ;;
+            major|minor|patch)
+              IFS='.' read -r major minor patch <<< "$currentVersion"
+              case "${{ inputs.release_type }}" in
+                major) major=$((major + 1)); minor=0; patch=0 ;;
+                minor) minor=$((minor + 1)); patch=0 ;;
+                patch) patch=$((patch + 1)) ;;
+              esac
+              releaseVersion="${major}.${minor}.${patch}"
+              ;;
+          esac
+
+          echo "Releasing version $releaseVersion (current: $currentVersion)"
+          echo "release_version=$releaseVersion" >> "$GITHUB_OUTPUT"
+
+      - name: Bump version
+        run: |
+          jq '.version = "${{ steps.version.outputs.release_version }}"' config.json > config.json.new
+          mv config.json.new config.json
+          git add config.json
+          git commit -m "Release ${{ steps.version.outputs.release_version }}"
+
+      - name: Regenerate README and argument specs
+        run: |
+          pip install ansible-argument-spec-generator ansible-docsmith
+          ansible-argument-spec-generator --single-role --from-defaults defaults/main.yml || true
+          ansible-docsmith generate . || true
+          git add meta/argument_specs.yml README.MD 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "docs: Auto-Generate README"
+
+      - name: Update changelog
+        run: |
+          pip install git-cliff
+
+          if [ ! -f cliff.toml ]; then
+            cat > cliff.toml <<'EOF'
+          [changelog]
+          header = ""
+          body = """
+          {% if version %}\
+          ## [{{ version | trim_start_matches(pat="v") }}](https://github.com/${{ github.repository }}/compare/{{ previous.version }}...{{ version }}) ({{ timestamp | date(format="%Y-%m-%d") }})
+          {% else %}\
+          ## [Unreleased]
+          {% endif %}\
+
+          {% for group, commits in commits | group_by(attribute="group") %}
+          ### {{ group }}
+
+          {% for commit in commits %}\
+          * {% if commit.scope %}**{{ commit.scope }}:** {% endif %}{{ commit.message | upper_first }} \
+          ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/${{ github.repository }}/commit/{{ commit.id }}))\
+          {% if commit.breaking %} **BREAKING CHANGE**{% endif %}
+
+          {% endfor %}
+          {% endfor %}\n
+          """
+          trim = true
+          footer = ""
+
+          [git]
+          conventional_commits = true
+          filter_unconventional = true
+          split_commits = false
+          tag_pattern = "v[0-9].*"
+          skip_tags = ""
+          ignore_tags = ""
+          sort_commits = "oldest"
+
+          commit_parsers = [
+              { message = "^feat", group = "Features" },
+              { message = "^fix", group = "Bug Fixes" },
+              { message = "^perf", group = "Performance" },
+              { message = "^refactor", group = "Refactoring" },
+              { message = "^doc|^docs", group = "Documentation" },
+              { message = "^test", group = "Testing" },
+              { message = "^chore\\(deps\\)", group = "Dependency Updates" },
+              { message = "^chore", skip = true },
+              { message = "^ci", skip = true },
+              { message = "^style", skip = true },
+              { body = ".*security", group = "Security" },
+          ]
+
+          protect_breaking_commits = false
+          filter_commits = true
+          EOF
+            git add cliff.toml
+          fi
+
+          touch CHANGELOG.md
+          git-cliff --config cliff.toml --tag "v${{ steps.version.outputs.release_version }}" --unreleased --prepend CHANGELOG.md
+          git-cliff --config cliff.toml --tag "v${{ steps.version.outputs.release_version }}" --latest --strip header > RELEASE_NOTES.md
+
+          git add CHANGELOG.md
+          git commit -m "chore: Changelog for Release ${{ steps.version.outputs.release_version }}"
+
+      - name: Push
+        run: git push origin develop
+
+      - name: Create Release on GH
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh release create "v${{ steps.version.outputs.release_version }}" \
+            --draft \
+            --title "${{ steps.version.outputs.release_version }}" \
+            --notes-file RELEASE_NOTES.md

@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          [ -f requirements.txt ] && pip install -r requirements.txt
+          [ -f test-requirements.txt ] && pip install -r test-requirements.txt
+          pip install ansible-lint
+
+      - name: Run ansible-lint
+        run: ansible-lint
+
+  molecule:
+    name: Molecule test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install ansible molecule "molecule-plugins[docker]"
+          [ -f molecule/default/requirements.txt ] && pip install -r molecule/default/requirements.txt
+
+      - name: Run molecule test
+        run: molecule test
+
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: "molecule/default/reports/*.xml"
