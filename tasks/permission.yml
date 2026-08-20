@@ -20,7 +20,7 @@
 - name: Copy .npmrc
   ansible.builtin.template:
     src: ".npmrc.j2"
-    dest: "{{ nvm_dest }}"
+    dest: "{{ nvm_dest }}/.npmrc"
     owner: "{{ nvm_user }}"
     group: "{{ nvm_group }}"
     mode: "0600"

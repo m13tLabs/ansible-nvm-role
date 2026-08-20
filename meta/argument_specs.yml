@@ -27,9 +27,9 @@ argument_specs:
         elements: str
         version_added: 1.0.0
       nvm_user:
-        description: 'Username for authentication (default: ''{{ ansible_user }}'')'
+        description: 'Username for authentication (default: ''{{ ansible_user | default(''jenkins'') }}'')'
         type: str
-        default: '{{ ansible_user }}'
+        default: '{{ ansible_user | default(''jenkins'') }}'
         version_added: 1.0.0
       nvm_version:
         description: 'Version specification (default: ''0.40.4'')'

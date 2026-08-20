@@ -9,5 +9,6 @@
     nvm_working_path: /home/testuser
     nvm_dest: /home/testuser/.nvm
     nvm_npm_pkgs: []
+    npm_auth_token: "test-token"
   roles:
     - role: ansible-nvm-role
