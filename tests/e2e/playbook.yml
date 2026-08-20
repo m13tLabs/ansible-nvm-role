@@ -2,9 +2,8 @@
 - name: End-to-end install
   hosts: all
   become: true
-  vars:
-    ansible_user: runner
-    e2e_node_version: "20.11.0"
+  vars_files:
+    - vars.yml
   tasks:
 
     - name: Install ansible-nvm-role
