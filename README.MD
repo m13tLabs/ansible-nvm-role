@@ -9,6 +9,8 @@ This role enrolls nvm on a machine and installs a npm module for the desired nod
 
 ## Role variables<a id="variables"></a>
 
+Auto-generated from defaults/main.yml
+
 The following variables can be configured for this role:
 
 | Variable | Type | Required | Default | Description (abstract) |

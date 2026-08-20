@@ -1,0 +1,58 @@
+---
+- name: Verify end-to-end install
+  hosts: all
+  become: true
+  vars:
+    ansible_user: runner
+    nvm_user: runner
+    e2e_node_version: "20.11.0"
+  tasks:
+    - name: Check .nvm directory exists
+      ansible.builtin.stat:
+        path: "{{ nvm_dest }}"
+      register: nvm_dir_stat
+
+    - name: Assert .nvm directory exists
+      ansible.builtin.assert:
+        that:
+          - nvm_dir_stat.stat.exists
+          - nvm_dir_stat.stat.isdir
+        fail_msg: ".nvm directory missing at {{ nvm_dest }}"
+
+    - name: Check nvm.sh exists (NVM installer was executed)
+      ansible.builtin.stat:
+        path: "{{ nvm_dest }}/nvm.sh"
+      register: nvm_sh_stat
+
+    - name: Assert nvm.sh is present
+      ansible.builtin.assert:
+        that:
+          - nvm_sh_stat.stat.exists
+        fail_msg: "nvm.sh not found at {{ nvm_dest }}/nvm.sh"
+
+    - name: Check Node.js version directory exists
+      ansible.builtin.stat:
+        path: "{{ nvm_dest }}/versions/node/v{{ e2e_node_version }}"
+      register: node_dir_stat
+
+    - name: Assert Node.js version directory exists
+      ansible.builtin.assert:
+        that:
+          - node_dir_stat.stat.exists
+          - node_dir_stat.stat.isdir
+        fail_msg: "Node.js v{{ e2e_node_version }} was not installed at {{ nvm_dest }}/versions/node/v{{ e2e_node_version }}"
+
+    - name: Verify node binary runs and reports correct version
+      ansible.builtin.shell: "source {{ nvm_dest }}/nvm.sh && node --version"
+      args:
+        executable: /bin/bash
+      become: true
+      become_user: e2etest
+      register: node_version_output
+      changed_when: false
+
+    - name: Assert correct Node.js version is active
+      ansible.builtin.assert:
+        that:
+          - "'v' + e2e_node_version in node_version_output.stdout"
+        fail_msg: "Expected Node.js v{{ e2e_node_version }}, got: {{ node_version_output.stdout }}"

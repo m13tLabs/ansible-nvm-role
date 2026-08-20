@@ -39,7 +39,7 @@
 - name: Fix permissions after download
   ansible.builtin.include_tasks: permission.yml
 
-- name: Get stats on .profile
+- name: Get stats on .bashrc (macOS)
   ansible.builtin.stat:
     path: "{{ nvm_working_path }}/.bashrc"
   become: true
@@ -55,22 +55,11 @@
   register: bashrc_stat
   when: ansible_os_family != 'Darwin' and ansible_os_family != 'Windows'
 
-- name: Create .profile on macOS
+- name: Create .bashrc on macOS
   ansible.builtin.file:
     path: "{{ nvm_working_path }}/.bashrc"
     state: touch
     mode: "0644"
-  become: true
-  become_user: "{{ nvm_user }}"
-  when:
-    - ansible_os_family == 'Darwin'
-    - not profile_stat.stat.exists
-
-- name: Symlink .profile to .bashrc on macOS
-  ansible.builtin.file:
-    src: "{{ nvm_working_path }}/.bash_profile"
-    dest: "{{ nvm_working_path }}/.bashrc"
-    state: link
   become: true
   become_user: "{{ nvm_user }}"
   when:

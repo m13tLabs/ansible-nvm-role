@@ -5,7 +5,7 @@
 # - Type: str
 # - Required: No
 # - Default: {{ ansible_user }}
-nvm_user: "{{ ansible_user | default('jenkins') }}"
+nvm_user: "{{ ansible_user }}"
 
 # Group name or ID (default: '{{ nvm_user }}')
 #

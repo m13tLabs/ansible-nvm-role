@@ -19,3 +19,4 @@ ansible/*.retry
 # Molecule test reports
 molecule/**/reports/
 RELEASE_NOTES.md
+.ansible
