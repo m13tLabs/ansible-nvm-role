@@ -1,4 +1,17 @@
 ---
+- name: Discover primary group of nvm_user
+  ansible.builtin.command: "id -gn {{ nvm_user }}"
+  register: nvm_user_primary_group
+  changed_when: false
+
+# nvm_group defaults to nvm_user, which assumes a Linux-style user-private-group
+# setup. That doesn't hold on macOS (e.g. the "runner" user's primary group is
+# "staff"), so fall back to the user's actual primary group in that case.
+- name: Use nvm_user's actual primary group unless nvm_group was overridden
+  ansible.builtin.set_fact:
+    nvm_group: "{{ nvm_user_primary_group.stdout }}"
+  when: nvm_group == nvm_user
+
 - name: Install nvm
   ansible.builtin.include_tasks: nvm.yml
 
