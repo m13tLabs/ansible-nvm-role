@@ -1,4 +1,23 @@
 ---
+# nvm_working_path defaults to "~nvm_user" so the role doesn't have to assume
+# /home vs /Users. Shell commands and path-type module args expand that
+# themselves, but values passed via `environment:` (e.g. NVM_DIR) are set
+# literally with no shell involved, so an unexpanded "~runner" leaks through
+# and breaks nvm's own install script. Resolve it to a real absolute path once
+# so every downstream use — including environment vars — gets the same value.
+- name: Resolve nvm_user's home directory
+  ansible.builtin.shell: "echo ~{{ nvm_user }}"
+  args:
+    executable: /bin/sh
+  register: nvm_user_home
+  changed_when: false
+  when: nvm_working_path.startswith('~')
+
+- name: Use resolved home directory instead of unexpanded tilde
+  ansible.builtin.set_fact:
+    nvm_working_path: "{{ nvm_user_home.stdout }}"
+  when: nvm_working_path.startswith('~')
+
 - name: Discover primary group of nvm_user
   ansible.builtin.command: "id -gn {{ nvm_user }}"
   register: nvm_user_primary_group
