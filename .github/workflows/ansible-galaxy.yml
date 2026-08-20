@@ -7,11 +7,5 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Ansible Galaxy Import
-        run: |
-          curl -X POST "https://galaxy.ansible.com/api/v1/imports/" \
-            -H "Authorization: Token ${{ secrets.ANSIBLE_GALAXY_API_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"repository\": \"https://github.com/cloudtooling/logging\"}"
+    uses: m13tLabs/gh-actions-templates/.github/workflows/ansible-role-galaxy.yml@main
+    secrets: inherit
