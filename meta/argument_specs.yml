@@ -35,8 +35,8 @@ argument_specs:
         default: 0.40.4
         version_added: 1.0.0
       nvm_working_path:
-        description: 'File or directory path (default: ''/home/{{ nvm_user }}'')'
-        type: path
-        default: /home/{{ nvm_user }}
+        description: 'File or directory path (default: ''~{{ nvm_user }}'')'
+        type: str
+        default: ~{{ nvm_user }}
         version_added: 1.0.0
 ...
