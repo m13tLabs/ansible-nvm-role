@@ -1,4 +1,23 @@
 
+## [1.1.0](https://github.com/m13tLabs/ansible-nvm-role/compare/v1.0.8...v1.1.0) (2026-08-28)
+
+### Bug Fixes
+
+* Make userhome work cross-os ([0668424](https://github.com/m13tLabs/ansible-nvm-role/commit/066842446e85182b133127dea09fbab6216ca2f9))
+
+* Correcting  group lookup ([a8fb305](https://github.com/m13tLabs/ansible-nvm-role/commit/a8fb305fe0a3441a27cd938baa8b65a07df956c7))
+
+* Correcting user home lookup ([ad7e480](https://github.com/m13tLabs/ansible-nvm-role/commit/ad7e480559cd0c80c0d30bc4e6a79371ace4a272))
+
+
+
+### Documentation
+
+* Auto-Generate README ([2b035ff](https://github.com/m13tLabs/ansible-nvm-role/commit/2b035ffc7c5cc9b72699bb2e82020aaeeb8c62a5))
+
+
+
+
 ## [1.0.8](https://github.com/m13tLabs/ansible-nvm-role/compare/...v1.0.8) (2026-08-20)
 
 ### Bug Fixes
