@@ -1,5 +1,11 @@
-Role Name
-=========
+ansible-nvm-role
+================
+
+[![Ansible Galaxy](https://img.shields.io/badge/galaxy-m13tlabs.nvm-660198?logo=ansible)](https://galaxy.ansible.com/ui/standalone/roles/m13tlabs/nvm/)
+[![Galaxy version](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F43358%2F&query=%24.summary_fields.versions%5B0%5D.name&label=version&color=blue)](https://galaxy.ansible.com/ui/standalone/roles/m13tlabs/nvm/)
+[![Galaxy downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2F43358%2F&query=%24.download_count&label=downloads&color=blue)](https://galaxy.ansible.com/ui/standalone/roles/m13tlabs/nvm/)
+[![CI](https://github.com/m13tLabs/ansible-nvm-role/actions/workflows/ci.yml/badge.svg)](https://github.com/m13tLabs/ansible-nvm-role/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 This role enrolls nvm on a machine and installs a npm module for the desired nodeJS version.
 
