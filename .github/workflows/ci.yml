@@ -6,6 +6,10 @@ on:
       - develop
   pull_request:
 
+permissions:
+  contents: read
+  checks: write
+
 jobs:
   ci:
     uses: m13tLabs/gh-actions-templates/.github/workflows/ansible-role-ci.yml@main
