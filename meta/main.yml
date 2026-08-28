@@ -1,10 +1,10 @@
 ---
 galaxy_info:
   role_name: nvm
-  namespace: m13tLabs
-  author: Martin Reinhardt, <martin.reinhardt@holisticon.de>
+  namespace: m13tlabs
+  author: Martin Reinhardt, <martin@m13t>
   description: Role installing nvm
-  company: Holisticon AG
+  company: m13t
   license: MIT
   min_ansible_version: "2.14"
   platforms:
