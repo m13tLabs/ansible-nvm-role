@@ -25,5 +25,5 @@ jobs:
       release_type: ${{ inputs.release_type }}
       custom_version: ${{ inputs.custom_version }}
       app_id: ${{ vars.CI_APP_ID }}
-      readme_filename: "README.MD"
+      readme_filename: "README.md"
     secrets: inherit
