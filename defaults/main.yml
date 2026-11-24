@@ -4,7 +4,8 @@
 #
 # - Type: str
 # - Required: No
-# - Default: {{ ansible_user }}
+# - Default: {{ ansible_user | default(ansible_user_id) | default(lookup('env',
+#   'USER')) }}
 nvm_user: "{{ ansible_user }}"
 
 # Group name or ID (default: '{{ nvm_user }}')
@@ -14,12 +15,9 @@ nvm_user: "{{ ansible_user }}"
 # - Default: {{ nvm_user }}
 nvm_group: "{{ nvm_user }}"
 
-# Home directory of nvm_user, resolved dynamically so the role works on both
-# Linux (/home/<user>) and macOS (/Users/<user>) without hardcoding a
-# platform-specific path. Override explicitly if the user's home lives
-# elsewhere.
+# File or directory path (default: '~{{ nvm_user }}')
 #
-# - Type: path
+# - Type: str
 # - Required: No
 # - Default: ~{{ nvm_user }}
 nvm_working_path: "~{{ nvm_user }}"

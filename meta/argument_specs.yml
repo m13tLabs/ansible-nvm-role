@@ -27,7 +27,7 @@ argument_specs:
       nvm_user:
         description: 'Username for authentication (default: ''{{ ansible_user }}'')'
         type: str
-        default: '{{ ansible_user }}'
+        default: "{{ ansible_user | default(ansible_user_id) | default(lookup('env', 'USER')) }}"
         version_added: 1.0.0
       nvm_version:
         description: 'Version specification (default: ''0.40.4'')'
