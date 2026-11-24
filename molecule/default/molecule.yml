@@ -5,7 +5,7 @@ driver:
   name: docker
 platforms:
   - name: debian-nvm
-    image: debian:bullseye
+    image: debian:bookworm
     pre_build_image: true
     privileged: false
     command: "/bin/sh -c 'while true; do sleep 3600; done'"
