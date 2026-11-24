@@ -1,4 +1,21 @@
 
+## [1.1.1](https://github.com/m13tLabs/ansible-nvm-role/compare/v1.1.0...v1.1.1) (2026-11-24)
+
+### Bug Fixes
+
+* Correcting nvm_user default ([70243f5](https://github.com/m13tLabs/ansible-nvm-role/commit/70243f536c1c45b8a234d80aca24303b785a2754))
+
+
+
+### Documentation
+
+* Fix typo ([a493d9b](https://github.com/m13tLabs/ansible-nvm-role/commit/a493d9b78435522058fce8d509b37375e835051c))
+
+* Auto-Generate README ([184ef5f](https://github.com/m13tLabs/ansible-nvm-role/commit/184ef5fa6557a0f2e803f9cf3445cbe86f0153ca))
+
+
+
+
 ## [1.1.0](https://github.com/m13tLabs/ansible-nvm-role/compare/v1.0.8...v1.1.0) (2026-08-28)
 
 ### Bug Fixes
