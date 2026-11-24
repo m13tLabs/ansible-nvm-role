@@ -25,7 +25,7 @@ The following variables can be configured for this role:
 | `nvm_group` | `str` | No | `"{{ nvm_user }}"` | Group name or ID (default: '{{ nvm_user }}') |
 | `nvm_node_version` | `str` | No | `"24.16.0"` | Version specification (default: '24.16.0') |
 | `nvm_npm_pkgs` | `list` | No | `[]` | List of nvm npm pkgs items |
-| `nvm_user` | `str` | No | `"{{ ansible_user \| default(ansible_user_id) \| default(lookup('env', 'USER')) }}"` | Username for authentication (default: '{{ ansible_user }}') |
+| `nvm_user` | `str` | No | `"{{ ansible_user }}"` | Username for authentication (default: '{{ ansible_user }}') |
 | `nvm_version` | `str` | No | `"0.40.4"` | Version specification (default: '0.40.4') |
 | `nvm_working_path` | `str` | No | `"~{{ nvm_user }}"` | File or directory path (default: '~{{ nvm_user }}') |
 
@@ -86,7 +86,7 @@ Username for authentication (default: '{{ ansible_user }}')
 
 - **Type**: `str`
 - **Required**: No
-- **Default**: `"{{ ansible_user | default(ansible_user_id) | default(lookup('env', 'USER')) }}"`
+- **Default**: `"{{ ansible_user }}"`
 
 
 
