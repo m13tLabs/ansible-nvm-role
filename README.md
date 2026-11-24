@@ -7,7 +7,7 @@ ansible-nvm-role
 [![CI](https://github.com/m13tLabs/ansible-nvm-role/actions/workflows/ci.yml/badge.svg)](https://github.com/m13tLabs/ansible-nvm-role/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-This role enrolls nvm on a machine and installs a npm module for the desired nodeJS version.
+This role enrolls nvm on a machine and installs a npm module for the desired NodeJS version.
 
 # Usage
 
