@@ -4,8 +4,7 @@
 #
 # - Type: str
 # - Required: No
-# - Default: {{ ansible_user | default(ansible_user_id) | default(lookup('env',
-#   'USER')) }}
+# - Default: {{ ansible_user }}
 nvm_user: "{{ ansible_user }}"
 
 # Group name or ID (default: '{{ nvm_user }}')
@@ -44,7 +43,8 @@ nvm_npm_pkgs: []
 # - Default: 0.40.4
 nvm_version: "0.40.4"
 
-# Version specification (default: '24.16.0')
+# Version specification (default: '24.16.0'), accepts semver ranges and alias,
+# e.g. latest & lts.
 #
 # - Type: str
 # - Required: No
