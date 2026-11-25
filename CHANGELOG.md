@@ -1,4 +1,25 @@
 
+## [1.2.0](https://github.com/m13tLabs/ansible-nvm-role/compare/v1.1.1...v1.2.0) (2026-11-25)
+
+### Bug Fixes
+
+* **molecule:** Upgrade test image from Debian 11 to Debian 12 ([5a40baa](https://github.com/m13tLabs/ansible-nvm-role/commit/5a40baa90eb2f57fe4aef153cee8a1891ab27536))
+
+
+
+### Documentation
+
+* Auto-Generate README ([756c07b](https://github.com/m13tLabs/ansible-nvm-role/commit/756c07b27deddf93a367698e84d825032f1fa9a3))
+
+
+
+### Features
+
+* Allow node alias usage ([653fe0f](https://github.com/m13tLabs/ansible-nvm-role/commit/653fe0fede64dafac6fb25630238b696695d8f86))
+
+
+
+
 ## [1.1.1](https://github.com/m13tLabs/ansible-nvm-role/compare/v1.1.0...v1.1.1) (2026-11-24)
 
 ### Bug Fixes
