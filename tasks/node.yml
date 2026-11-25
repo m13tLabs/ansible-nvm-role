@@ -1,10 +1,13 @@
 ---
-- name: Get stats on node
-  ansible.builtin.stat:
-    path: "{{ nvm_dest }}/versions/node/v{{ nvm_node_version }}"
+- name: Check if node version is installed
+  ansible.builtin.shell: "source {{ nvm_dest }}/nvm.sh && nvm version {{ nvm_node_version }}"
+  args:
+    executable: /bin/bash
   become: true
   become_user: "{{ nvm_user }}"
-  register: node_stat
+  register: node_check
+  changed_when: false
+  failed_when: false
 
 - name: Install node
   ansible.builtin.shell: "source {{ nvm_dest }}/nvm.sh && nvm install {{ nvm_node_version }}"
@@ -12,7 +15,7 @@
     executable: /bin/bash
   become: true
   become_user: "{{ nvm_user }}"
-  when: not node_stat.stat.exists
+  when: node_check.stdout == 'N/A' or node_check.rc != 0
   changed_when: true
 
 - name: Set default Node version for new shell
@@ -21,5 +24,5 @@
     executable: /bin/bash
   become: true
   become_user: "{{ nvm_user }}"
-  when: not node_stat.stat.exists
+  when: node_check.stdout == 'N/A' or node_check.rc != 0
   changed_when: true

@@ -23,7 +23,7 @@ The following variables can be configured for this role:
 |----------|------|----------|---------|------------------------|
 | `nvm_dest` | `str` | No | `"{{ nvm_working_path }}/.nvm"` | Configuration value for nvm dest |
 | `nvm_group` | `str` | No | `"{{ nvm_user }}"` | Group name or ID (default: '{{ nvm_user }}') |
-| `nvm_node_version` | `str` | No | `"24.16.0"` | Version specification (default: '24.16.0') |
+| `nvm_node_version` | `str` | No | `"24.16.0"` | Version specification (default: '24.16.0'), accepts semver ranges and alias, e.g. latest & lts. |
 | `nvm_npm_pkgs` | `list` | No | `[]` | List of nvm npm pkgs items |
 | `nvm_user` | `str` | No | `"{{ ansible_user }}"` | Username for authentication (default: '{{ ansible_user }}') |
 | `nvm_version` | `str` | No | `"0.40.4"` | Version specification (default: '0.40.4') |
@@ -57,7 +57,7 @@ Group name or ID (default: '{{ nvm_user }}')
 
 [*⇑ Back to ToC ⇑*](#toc)
 
-Version specification (default: '24.16.0')
+Version specification (default: '24.16.0'), accepts semver ranges and alias, e.g. latest & lts.
 
 - **Type**: `str`
 - **Required**: No

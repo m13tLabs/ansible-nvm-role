@@ -14,7 +14,7 @@ argument_specs:
         default: '{{ nvm_user }}'
         version_added: 1.0.0
       nvm_node_version:
-        description: 'Version specification (default: ''24.16.0'')'
+        description: 'Version specification (default: ''24.16.0''), accepts semver ranges and alias, e.g. latest & lts.'
         type: str
         default: 24.16.0
         version_added: 1.0.0
